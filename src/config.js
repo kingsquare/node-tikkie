@@ -4,6 +4,7 @@ import fs from 'fs';
 import jwt from 'jsonwebtoken';
 
 import {AccessToken} from './accessToken';
+import {TikkieErrorCollection, TikkieError} from './error';
 
 const PRODUCTION_API_URL = 'https://api.abnamro.com';
 const PRODUCTION_TOKEN_AUDIENCE = 'https://auth.abnamro.com/oauth/token';
@@ -37,6 +38,7 @@ export class TikkieConfig {
 
     createHeaders(): Headers {
         const headers: Headers = new Headers();
+        headers.append('User-Agent', 'node-tikkie/1.0');
         headers.append('API-Key', this.apiKey);
         return headers;
     }
@@ -72,7 +74,7 @@ export class TikkieConfig {
                 if (response.status >= 200 && response.status <= 399) {
                     this._accessToken = new AccessToken(result);
                 } else {
-                    throw new Error('test');
+                    throw new TikkieErrorCollection(result.errors);
                 }
             } catch (err) {
                 throw err;
@@ -81,34 +83,38 @@ export class TikkieConfig {
         return this._accessToken.token;
     }
 
-    request = async (method: 'GET' | 'POST', endpoint: string, query: Object = {}, data: Object = {}): Promise<Object> => {
+    request = async (method: 'GET' | 'POST', endpoint: string, data: Object | null = null): Promise<Object> => {
         try {
             let token: string;
             try {
                 token = await this.getAccessToken();
             } catch (err) {
-                return new Error('test');
+                throw err;
             }
 
             const headers: Headers = this.createHeaders();
             headers.append('Authorization', `Bearer ${token}`);
+            if (data) {
+                headers.append('Content-Type', 'application/json');
+            }
 
             const response: Response = await fetch(`${this.apiUrl}${endpoint}`, {
                 method,
-                headers
+                headers,
+                body: data ? JSON.stringify(data) : undefined
             });
             const result: Object = await response.json();
 
             if (response.status >= 200 && response.status <= 399) {
                 return result;
             } else {
-                throw new Error('test');
+                throw new TikkieErrorCollection(result.errors);
             }
         } catch (err) {
             throw err;
         }
     }
 
-    getRequest = async (endpoint: string, query: Object = {}): Promise<Object> => this.request('GET', endpoint, query)
-    postRequest = async (endpoint: string, data: Object = {}): Promise<Object> => this.request('POST', endpoint, {}, data)
+    getRequest = (endpoint: string): Promise<Object> => this.request('GET', endpoint)
+    postRequest = (endpoint: string, data: Object = {}): Promise<Object> => this.request('POST', endpoint, data)
 };
