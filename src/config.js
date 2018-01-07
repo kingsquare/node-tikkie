@@ -55,7 +55,7 @@ export class TikkieConfig {
     }
 
     getAccessToken = async (): Promise<string> => {
-        if (!this._accessToken && !this._accessToken.hasExpired()) {
+        if (!this._accessToken || this._accessToken.hasExpired()) {
             try {
                 const body = new URLSearchParams();
                 body.append('client_assertion_type', 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer');
