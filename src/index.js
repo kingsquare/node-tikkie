@@ -1,5 +1,7 @@
 // @flow
 
+import 'isomorphic-fetch';
+
 export const PLATFORM_USAGE_MYSELF = 'PAYMENT_REQUEST_FOR_MYSELF';
 export const PLATFORM_USAGE_OTHERS = 'PAYMENT_REQUEST_FOR_OTHERS';
 
