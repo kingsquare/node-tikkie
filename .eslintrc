@@ -2,13 +2,15 @@
     "parser": "babel-eslint",
     "plugins": [
         "babel",
-        "import"
+        "import",
+        "flowtype"
     ],
     "extends": [
         "eslint:recommended",
         "google",
         "plugin:import/errors",
         "plugin:import/warnings",
+        "plugin:flowtype/recommended"
     ],
     "env": {
         "node": true,
