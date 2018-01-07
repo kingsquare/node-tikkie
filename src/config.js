@@ -1,6 +1,7 @@
 // @flow
 
 import fs from 'fs';
+import {URLSearchParams} from 'url';
 import jwt from 'jsonwebtoken';
 
 import {AccessToken} from './accessToken';
@@ -57,7 +58,7 @@ export class TikkieConfig {
     getAccessToken = async (): Promise<string> => {
         if (!this._accessToken || this._accessToken.hasExpired()) {
             try {
-                const body = new URLSearchParams();
+                const body: Object = new URLSearchParams();
                 body.append('client_assertion_type', 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer');
                 body.append('client_assertion', this.getJsonWebToken());
                 body.append('grant_type', 'client_credentials');
