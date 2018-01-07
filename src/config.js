@@ -4,7 +4,7 @@ import fs from 'fs';
 import jwt from 'jsonwebtoken';
 
 import {AccessToken} from './accessToken';
-import {TikkieErrorCollection, TikkieError} from './error';
+import {TikkieErrorCollection} from './error';
 
 const PRODUCTION_API_URL = 'https://api.abnamro.com';
 const PRODUCTION_TOKEN_AUDIENCE = 'https://auth.abnamro.com/oauth/token';
