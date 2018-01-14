@@ -64,9 +64,12 @@ export class TikkieConfig {
                 body.append('grant_type', 'client_credentials');
                 body.append('scope', 'tikkie');
 
+                const headers: Headers = this.createHeaders();
+                headers.append('Content-Type', 'application/x-www-form-urlencoded');
+
                 const response: Response = await fetch(`${this.apiUrl}/v1/oauth/token`, {
                     method: 'POST',
-                    headers: this.createHeaders(),
+                    headers,
                     body
                 });
 
